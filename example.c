@@ -14,10 +14,12 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdint.h>
+#include <unistd.h>
 #include "thpool.h"
 
 void task(void *arg){
-	printf("Thread #%u working on %d\n", (int)pthread_self(), (int) arg);
+	sleep(1);
+	printf("Thread #%u working on %lu\n", (int)pthread_self(), (uintptr_t) arg);
 }
 
 
@@ -29,7 +31,7 @@ int main(){
 	puts("Adding 40 tasks to threadpool");
 	int i;
 	for (i=0; i<40; i++){
-		thpool_add_work(thpool, task, (void*)(uintptr_t)i);
+		thpool_add_work_priority(thpool, task, (void*)(uintptr_t)i, i);
 	};
 
 	thpool_wait(thpool);
