@@ -12,9 +12,9 @@
  * Each job is to simply print its priority.
  * 
  * */
-
+FILE* output;
 void task_with_priority(void* priority){
-	printf("%ld ", (uintptr_t)priority);
+	fprintf(output, "%ld ", (uintptr_t)priority);
 }
 
 int main(int argc, char *argv[]){
@@ -24,11 +24,17 @@ int main(int argc, char *argv[]){
 		puts("This testfile needs excactly one arguments");
 		exit(1);
 	}
-
-
+    output = fopen("output.txt", "w");
+    FILE* expected_output = fopen("expected_output.txt", "w");
+    if(output == NULL|| expected_output == NULL){
+        puts("Fopen failed");
+    }
 	int num_jobs = strtol(argv[1], &p, 10);
 
-	threadpool thpool;
+	for(int i = num_jobs; i > 0; --i){
+        fprintf(expected_output, "%d ", i);
+    }    
+    threadpool thpool;
     /* Test if  thread pick tasks based on priority */
 	
 	thpool = thpool_init(1);
